@@ -1,0 +1,30 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ldaps-cli
+  labels:
+    app: ldaps-cli
+    app.openshift.io/runtime: redhat
+    app.kubernetes.io/part-of: ldaps-cli
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: ldaps-cli
+  template:
+    metadata:
+      labels:
+        app: ldaps-cli
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - image: quay.io/openshift-examples/ldaps-stunnel:20250224T203952
+          name: ldap
+          command:
+            - /bin/sh
+            - -c
+            - |
+              sleep infinity

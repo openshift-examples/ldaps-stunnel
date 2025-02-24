@@ -1,0 +1,56 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ldaps-stunnel
+  labels:
+    app: ldaps-stunnel
+    app.openshift.io/runtime: redhat
+    app.kubernetes.io/part-of: ldaps-stunnel
+spec:
+  replicas: 1
+  strategy:
+    type: Recreate
+  selector:
+    matchLabels:
+      app: ldaps-stunnel
+  template:
+    metadata:
+      labels:
+        app: ldaps-stunnel
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - image: quay.io/openshift-examples/ldaps-stunnel:20250224T203952
+          name: stunnel
+          ports:
+            - name: ldap
+              containerPort: 1389
+          env:
+            - name: LDAP_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: ldaps-stunnel
+                  key: LDAP_PORT
+            - name: LDAP_SERVER
+              valueFrom:
+                configMapKeyRef:
+                  name: ldaps-stunnel
+                  key: LDAP_SERVER
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: ldaps-stunnel
+  name: ldaps-stunnel
+spec:
+  ports:
+    - name: ldap
+      port: 389
+      protocol: TCP
+      targetPort: ldap
+  selector:
+    app: ldaps-stunnel
+  sessionAffinity: None
+  type: ClusterIP
