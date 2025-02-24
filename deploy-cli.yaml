@@ -23,6 +23,11 @@ spec:
       containers:
         - image: quay.io/openshift-examples/ldaps-stunnel:20250224T203952
           name: ldap
+          env:
+            - name: NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
           command:
             - /bin/sh
             - -c
