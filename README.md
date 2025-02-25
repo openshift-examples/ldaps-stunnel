@@ -29,7 +29,7 @@ Deploy in your project/namespace of choise
 ### Create configmap
 
 ```bash
-oc create configmap ldaps-stunnel2 \
+oc create configmap ldaps-stunnel \
     --from-literal=LDAP_SERVER=inf1 \
     --from-literal=LDAP_PORT=636
 ```
